@@ -10,9 +10,9 @@ public class Main {
         System.out.println("Another Line");
 
 
-       // AutomateScreenshot.captureScreen("classTest.png");
+        // AutomateScreenshot.captureScreen("classTest.png");
 
-        ProcessImage automateCrop = new ProcessImage("test2.png");
+        ProcessImage automateCrop = new ProcessImage("test.png");
 
     }
 }

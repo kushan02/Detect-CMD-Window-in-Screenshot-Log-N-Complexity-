@@ -4,6 +4,8 @@ package com.kushanmehta;/* Author: Kushan Mehta
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +73,28 @@ public class ProcessImage extends Component {
 
             cropImage(ans);
 
+            imageWidth = image.getWidth();
+            imageHeight = image.getHeight();
+
+            //TODO: Add crop detection for image horizontally too! (use concept of strip)
+
+//            rotateImageClockwise();
+//
+//            imageWidth = image.getWidth();
+//            imageHeight = image.getHeight();
+//
+//            cropImage(getCropRow());
+//
+//            imageWidth = image.getWidth();
+//            imageHeight = image.getHeight();
+//
+//            rotateImageAntiClockwise();
+//
+//            imageWidth = image.getWidth();
+//            imageHeight = image.getHeight();
+
+            saveImage(fileName);
+
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -80,11 +104,31 @@ public class ProcessImage extends Component {
 
         if (cropHeight < imageHeight)
             image = image.getSubimage(0, 0, imageWidth, cropHeight);
+    }
+
+    private void rotateImageClockwise() {
+        image = new AffineTransformOp(
+                AffineTransform.getQuadrantRotateInstance(
+                        1, imageWidth / 2, imageHeight / 2),
+                AffineTransformOp.TYPE_BILINEAR).filter(image, null);
+    }
+
+    private void rotateImageAntiClockwise() {
+        image = new AffineTransformOp(
+                AffineTransform.getQuadrantRotateInstance(
+                        3, imageWidth / 2, imageHeight / 2),
+                AffineTransformOp.TYPE_BILINEAR).filter(image, null);
+    }
+
+    private void saveImage(String outputFileName) {
+
+        String newFileName = outputFileName.substring(0, outputFileName.lastIndexOf('.'));
+        newFileName += "-newOutput.png";
 
 
-        File outputfile = new File("outputImage.jpg");
+        File outputfile = new File(newFileName);
         try {
-            ImageIO.write(image, "jpg", outputfile);
+            ImageIO.write(image, "png", outputfile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -150,7 +194,7 @@ public class ProcessImage extends Component {
 
         // return lowerRow;
 
-        return lowerRow + 2 * Square.SIZE;
+        return lowerRow + (int) (1.5 * Square.SIZE);
     }
 
     private boolean hasTextPresence(Square square) {
